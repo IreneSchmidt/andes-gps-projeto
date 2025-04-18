@@ -242,6 +242,7 @@ Documentation, guides, and usage information.
 
 This structure aims to be modular, clean, and scalable. By grouping files by responsibility, we enhance readability, maintenance, and future development.
 
+---
 
 
     
