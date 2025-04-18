@@ -34,6 +34,7 @@
     "dependencies": {
         "@codingame/monaco-vscode-editor-service-override": "1.83.16",
         "@codingame/monaco-vscode-keybindings-service-override": "1.83.16",
+        "andes": "file:",
         "axios": "^1.7.2",
         "chalk": "~5.3.0",
         "commander": "~11.0.0",
@@ -119,7 +120,6 @@
                 "command": "andes.generateSparkDocument",
                 "title": "Generate Spark Document"
             }
-
         ],
         "menus": {
             "commandPalette": [
@@ -143,7 +143,6 @@
                     "command": "andes.generateSparkDocument",
                     "when": "editorLangId == andes"
                 }
-
             ],
             "editor/context": [
                 {
@@ -171,7 +170,6 @@
                     "group": "z_commands",
                     "when": "editorLangId == andes"
                 }
-
             ]
         }
     },
