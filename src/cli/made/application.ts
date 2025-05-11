@@ -30,7 +30,7 @@ export class MadeApplication {
 
     private createBacklog():string{
 
-        const projectID = this.model.project?.id.toLocaleLowerCase() ?? "nodefined"
+        const projectID = this.model.project?.id ?? "Name"
         const useCases = this.model.components.filter(isUseCase)
         const project = this.model.project
 
@@ -43,14 +43,15 @@ export class MadeApplication {
         useCases.map(useCase=> useCase.events.map((event,index) =>this.dict[event.id]=`${projectID}.${useCase.id.toLocaleLowerCase()}_${index}`))
 
         return expandToStringWithNL`
+        project ${projectID}{
+            name: "${project?.name_fragment?? "nodefined"}"
+            description: "${project?.description}"
+        }
         backlog ${projectID}{
             name: "${project?.name_fragment?? "nodefined"}"
             description: "${project?.description}"
-            
             ${modulesClassDiagram.length > 0? this.createDiagramModel(modulesClassDiagram): " "}
-            
             ${useCases.map(useCase=>  this.createEPIC(projectID, useCase)).join(`\n`)}
-
         }
         `
     }
@@ -60,10 +61,7 @@ export class MadeApplication {
         epic domaindiagram {
             name: "Create Problem Domain Modules"
             description: "Create Problem Domain Modules"
-
             ${modules.map(module => module.name? this.createStoryFromModule(module): "").join("\n")}
-                
-            
         }        `
     }
 
