@@ -13,6 +13,11 @@
         "type": "git",
         "url": "https://github.com/leds-org/leds-tools-andes.git"
     },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
+    },
     "type": "module",
     "scripts": {
         "build": "tsc -b tsconfig.src.json && node esbuild.mjs",
@@ -34,6 +39,7 @@
     "dependencies": {
         "@codingame/monaco-vscode-editor-service-override": "1.83.16",
         "@codingame/monaco-vscode-keybindings-service-override": "1.83.16",
+        "andes-lib": "^0.1.5",
         "axios": "^1.7.2",
         "chalk": "~5.3.0",
         "commander": "~11.0.0",
@@ -55,7 +61,9 @@
         "@types/vscode": "~1.67.0",
         "@typescript-eslint/eslint-plugin": "~6.4.1",
         "@typescript-eslint/parser": "~6.4.1",
+        "commitizen": "^4.3.1",
         "concurrently": "~8.2.1",
+        "cz-conventional-changelog": "^3.3.0",
         "esbuild": "~0.19.2",
         "eslint": "~8.47.0",
         "globals": "^15.11.0",
@@ -119,7 +127,6 @@
                 "command": "andes.generateSparkDocument",
                 "title": "Generate Spark Document"
             }
-
         ],
         "menus": {
             "commandPalette": [
@@ -143,7 +150,6 @@
                     "command": "andes.generateSparkDocument",
                     "when": "editorLangId == andes"
                 }
-
             ],
             "editor/context": [
                 {
@@ -171,7 +177,6 @@
                     "group": "z_commands",
                     "when": "editorLangId == andes"
                 }
-
             ]
         }
     },
