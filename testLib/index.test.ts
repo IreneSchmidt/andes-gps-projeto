@@ -1,5 +1,7 @@
 import {Model, SparkApplication, MadeApplication} from "andes-lib"
-import { test } from 'vitest'
+import { test , expect } from 'vitest'
+import fs from "fs"
+import path from "path"
 
 const myModel: Model = {
     project: {
@@ -17,9 +19,15 @@ const myTargetFolder: string = "./generated-files";
 test("SparkApplication Test", ()=>{const sparkApp = new SparkApplication
     (myModel, myTargetFolder);
     sparkApp.create();
- })
+
+    const expectedFile = path.join(myTargetFolder, "myproject.spark"); 
+    expect(fs.existsSync(expectedFile)).toBe(true); // <--- Verifica se realmente a pasta foi criada, se ela existe após execução feita
+ });
 
  test("MadeApplication Test", ()=>{const madeApp = new MadeApplication
     (myModel, myTargetFolder);
     madeApp.create();
- })
+
+    const expectedFile = path.join(myTargetFolder, "myproject.made"); 
+    expect(fs.existsSync(expectedFile)).toBe(true); 
+ });
