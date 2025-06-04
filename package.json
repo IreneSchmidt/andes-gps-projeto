@@ -194,5 +194,10 @@
     "resolutions": {
         "monaco-editor": "npm:@codingame/monaco-editor-treemended@1.83.16",
         "vscode": "npm:@codingame/monaco-vscode-api@1.83.16"
+    },
+    "config":{
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
     }
 }

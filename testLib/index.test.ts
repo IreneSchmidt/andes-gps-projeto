@@ -20,7 +20,7 @@ test("SparkApplication Test", ()=>{const sparkApp = new SparkApplication
     (myModel, myTargetFolder);
     sparkApp.create();
 
-    const expectedFile = path.join(myTargetFolder, "myproject.spark"); 
+    const expectedFile = path.join(myTargetFolder, "./spark/myproject.spark"); 
     expect(fs.existsSync(expectedFile)).toBe(true); // <--- Verifica se realmente a pasta foi criada, se ela existe após execução feita
  });
 
@@ -28,6 +28,6 @@ test("SparkApplication Test", ()=>{const sparkApp = new SparkApplication
     (myModel, myTargetFolder);
     madeApp.create();
 
-    const expectedFile = path.join(myTargetFolder, "myproject.made"); 
+    const expectedFile = path.join(myTargetFolder, "./made/myproject.made"); 
     expect(fs.existsSync(expectedFile)).toBe(true); 
  });

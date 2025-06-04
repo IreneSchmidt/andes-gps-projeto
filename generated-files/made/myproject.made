@@ -1,0 +1,10 @@
+project MyProject{
+    name: "nodefined"
+    description: "This is a description of my awesome project."
+}
+backlog MyProject{
+    name: "nodefined"
+    description: "This is a description of my awesome project."
+
+
+}
