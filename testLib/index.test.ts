@@ -1,4 +1,4 @@
-import {Model, SparkApplication, MadeApplication} from "andes-lib"
+import {Model, SparkApplication, MadeApplication, DocumentationApplication} from "andes-lib"
 import { test , expect } from 'vitest'
 import fs from "fs"
 import path from "path"
@@ -30,4 +30,9 @@ test("SparkApplication Test", ()=>{const sparkApp = new SparkApplication
 
     const expectedFile = path.join(myTargetFolder, "./made/myproject.made"); 
     expect(fs.existsSync(expectedFile)).toBe(true); 
+ });
+
+ test("DocumentationAplication Test", ()=>{const DocsApp = new DocumentationApplication
+    (myModel, myTargetFolder);
+    DocsApp.create();
  });
