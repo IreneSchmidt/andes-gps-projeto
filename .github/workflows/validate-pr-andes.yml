@@ -1,0 +1,31 @@
+name: 📋 Validação de Pull Request
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  validate-pr-template:
+    name: Verificar preenchimento do PR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validar se todas as seções estão presentes
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.pull_request.body || "";
+            const requiredSections = [
+              "# 📄 Descrição",
+              "# 🔗 Tarefa(s) Relacionada(s)",
+              "# ✅ Checklist",
+              "# 🚀 Como testar este PR?"
+            ];
+
+            const missing = requiredSections.filter(section => !body.includes(section));
+
+            if (missing.length > 0) {
+              core.setFailed(`❌ O PR está incompleto. Faltando seção(ões): ${missing.join(", ")}`);
+            } else {
+              core.info("✅ Todas as seções obrigatórias estão presentes.");
+            }
