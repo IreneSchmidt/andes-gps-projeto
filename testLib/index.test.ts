@@ -53,7 +53,8 @@ const myModel: Model = {
         id: "MyProject",
         name: "My Awesome Project",
         description: "This is a description of my awesome project.",
-        architecture: "java"
+        architecture: "java",
+        name_fragment: "Nome Do Projeto"
     },
     components: [
         myRequirement,

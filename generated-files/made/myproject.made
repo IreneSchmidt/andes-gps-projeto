@@ -1,0 +1,10 @@
+project MyProject{
+    name: "Nome Do Projeto"
+    description: "This is a description of my awesome project."
+}
+backlog MyProject{
+    name: "Nome Do Projeto"
+    description: "This is a description of my awesome project."
+
+
+}
