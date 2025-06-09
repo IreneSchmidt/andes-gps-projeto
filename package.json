@@ -13,6 +13,11 @@
         "type": "git",
         "url": "https://github.com/leds-org/leds-tools-andes.git"
     },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
+    },
     "type": "module",
     "scripts": {
         "build": "tsc -b tsconfig.src.json && node esbuild.mjs",
@@ -29,13 +34,17 @@
         "dev": "vite",
         "dev:debug": "vite --debug --force",
         "serve": "npm run dev",
-        "test": "vitest run"
+        "test": "vitest run",
+        "coverage": "vitest run --coverage",
+        "test:watch": "vitest watch"
     },
     "dependencies": {
         "@codingame/monaco-vscode-editor-service-override": "1.83.16",
         "@codingame/monaco-vscode-keybindings-service-override": "1.83.16",
-        "andes": "file:",
+        "andes-lib": "^0.1.11",
+
         "axios": "^1.7.2",
+        "c8": "^10.1.3",
         "chalk": "~5.3.0",
         "commander": "~11.0.0",
         "dotenv": "^16.4.5",
@@ -56,7 +65,10 @@
         "@types/vscode": "~1.67.0",
         "@typescript-eslint/eslint-plugin": "~6.4.1",
         "@typescript-eslint/parser": "~6.4.1",
+        "@vitest/coverage-v8": "^3.2.1",
+        "commitizen": "^4.3.1",
         "concurrently": "~8.2.1",
+        "cz-conventional-changelog": "^3.3.0",
         "esbuild": "~0.19.2",
         "eslint": "~8.47.0",
         "globals": "^15.11.0",
@@ -65,7 +77,7 @@
         "typescript": "~5.1.6",
         "typescript-eslint": "^8.9.0",
         "vite": "^4.5.5",
-        "vitest": "~1.0.0",
+        "vitest": "3.2.1",
         "vscode": "npm:@codingame/monaco-vscode-api@1.83.16",
         "vscode-languageclient": "~9.0.1",
         "vscode-languageserver": "~9.0.1"

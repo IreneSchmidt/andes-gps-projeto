@@ -1,0 +1,6 @@
+Configuration {
+    software_name: "Nome Do Projeto"
+    about: "This is a description of my awesome project."
+    language: java
+}
+
