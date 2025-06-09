@@ -13,3 +13,4 @@ generated-files/
 # Vitest cache
 coverage/
 .vitest/
+bin/

@@ -30,9 +30,9 @@ export class SparkApplication {
 
         return expandToStringWithNL`
         Configuration {
-            software_name: "${project?.name_fragment?? "nodefined"}"
+            software_name: "${project?.name_fragment?? "Name"}"
             about: "${project?.description}"
-            language: ${project?.architcture?? "nodefined"}
+            language: ${project?.architcture?? "java"}
         }
         ${modules.map(module => `module ${module.name}
         {
