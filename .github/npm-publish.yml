@@ -1,0 +1,120 @@
+name: Publish to npm
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Permite acionar o fluxo de trabalho manualmente na interface do GitHub
+
+jobs:
+  publish:
+    runs-on: ubuntu-22.04 # O ambiente onde o job será executado, 22 para não ocorrer surpresas de atualização.
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org/' # Garante que o npm aponte para o registro correto
+
+      - name: Install dependencies
+        run: npm ci 
+
+      - name: Run tests
+        run: npm test
+
+      - name: Configure Git for npm version
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Determine version bump and publish
+        id: versioning
+        run: | # incrementa a nova versão e em seguida publica a nova versão. Também pega a nova versão para realizar o envio.
+    
+          npm version patch -m "Release: %s" || { echo "::error::npm version failed"; exit 1; }
+          
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_ENV # Exporta para variáveis de ambiente
+          npm publish || { echo "::error::npm publish failed"; exit 1; }
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Push new version tag and package.json changes
+        run: | # Envia a nova tag de versão para o GitHub depois envia o commit do package.json com a versão atualizada
+          git push --tags
+          git push origin main
+
+      - name: Send success notification to Discord
+        if: success() # Este passo só roda se todos os anteriores tiverem sucesso
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{
+            "username": "NPM Publisher",
+            "avatar_url": "https://avatars.githubusercontent.com/in/15368?s=200&v=4",
+            "embeds": [
+              {
+                "title": "✅ Publicação NPM SUCESSO!",
+                "description": "A biblioteca `andes-gps-projeto` foi publicada com sucesso no npm.",
+                "color": 3066993, # Cor verde
+                "fields": [
+                  {
+                    "name": "Nova Versão",
+                    "value": "v${{ env.NEW_VERSION }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "Link NPM",
+                    "value": "https://www.npmjs.com/package/andes-gps-projeto",
+                    "inline": true
+                  },
+                  {
+                    "name": "Workflow",
+                    "value": "[${{ github.workflow }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})",
+                    "inline": true
+                  }
+                ],
+                "footer": {
+                  "text": "Executado por: ${{ github.actor }}",
+                  "icon_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                },
+                "timestamp": "${{ github.event.head_commit.timestamp }}"
+              }
+            ]
+          }' ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+      - name: Send failure notification to Discord
+        if: failure() # Este passo só roda se ALGUM passo anterior falhar
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{
+            "username": "NPM Publisher",
+            "avatar_url": "https://avatars.githubusercontent.com/in/15368?s=200&v=4",
+            "embeds": [
+              {
+                "title": "❌ Publicação NPM FALHA!",
+                "description": "Houve um erro ao tentar publicar a biblioteca `andes-gps-projeto` no npm.",
+                "color": 15158332, # Cor vermelha
+                "fields": [
+                  {
+                    "name": "Erro no Job",
+                    "value": "Verifique os logs do workflow para detalhes.",
+                    "inline": true
+                  },
+                  {
+                    "name": "Workflow",
+                    "value": "[${{ github.workflow }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})",
+                    "inline": true
+                  }
+                ],
+                "footer": {
+                  "text": "Executado por: ${{ github.actor }}",
+                  "icon_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                },
+                "timestamp": "${{ github.event.head_commit.timestamp }}"
+              }
+            ]
+          }' ${{ secrets.DISCORD_WEBHOOK_URL }}
