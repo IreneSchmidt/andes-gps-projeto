@@ -5,6 +5,7 @@ export class DocumentationApplication {
     private docksaurusService: DocksaurusService;
 
     constructor(model: Model, targetFolder: string) {
+        console.log('DocumentationApplication initialize');
         this.docksaurusService = new DocksaurusService(model, targetFolder);
     }
 
