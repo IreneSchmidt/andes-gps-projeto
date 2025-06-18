@@ -28,9 +28,10 @@ AbstractElement:
 
 Module:
     'module' name=QualifiedName '{'
-        | Description
-        (
-        elements+=(AbstractElement | LocalEntity)
+        ( Description 
+        | localEntities+=(LocalEntity)
+        | enumXs+=(EnumX)
+        | modules+= (Module)
         )*
     '}'
 ; 

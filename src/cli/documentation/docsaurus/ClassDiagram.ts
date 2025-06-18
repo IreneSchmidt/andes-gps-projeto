@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from 'path';
-import { LocalEntity, Model, Module, Relation, isEnumX, isImportedEntity, isLocalEntity, isManyToMany, isManyToOne, isModule, isOneToOne } from "../../../language/generated/ast.js";
+import { LocalEntity, Model, Module, Relation, isImportedEntity, isManyToMany, isManyToOne, isModule, isOneToOne } from "../../../language/generated/ast.js";
 import { base_ident } from "../../generator-utils.js";
 import { expandToStringWithNL } from "langium/generate";
 
@@ -25,8 +25,8 @@ export class DiagramGeneratorService {
     }
 
     private createClassDiagram(module: Module): string {
-        const enums = module.elements.filter(isEnumX);
-        const entities = module.elements.filter(isLocalEntity);
+        const enums = module.enumXs;
+        const entities = module.localEntities;
 
         return expandToStringWithNL`
             @startuml ${module.name}

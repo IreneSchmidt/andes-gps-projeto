@@ -34,7 +34,7 @@ export class DocksaurusService {
     }
 
     private createRequirements(){
-        
+        console.log("Creating requirements")
         const project = this.model.project
         const module_name = project?.id.toLocaleLowerCase() ?? `module_name`
         const module_path = createPath( this.ANALYSIS_PATH, module_name)        
@@ -211,26 +211,26 @@ ${useCases.map(usecase=> this.createUseCaseContain(usecase)).join('\n')}
     }
 
     private createIntroduction (){
-        
+        console.log("Creating introduction")
         const project = this.model.project
         
         const value = `
----
-sidebar_position: 1
----
-# Propósito
-${project?.purpose}
-        
-## Minimundo
-${project?.miniworld}
- `
+        ---
+        sidebar_position: 1
+        ---
+        # Propósito
+        ${project?.purpose}
+                
+        ## Minimundo
+        ${project?.miniworld}
+        `
         const module_name = project?.id.toLocaleLowerCase() ?? `module_name`
         const module_path = createPath( this.ANALYSIS_PATH, module_name)        
         fs.writeFileSync(path.join(module_path , `introducao.md`), value)
 
     }    
     private createAnalysFolder(){
-        
+        console.log("Creating analysis folder")
         this.ANALYSIS_PATH = createPath( this.DOC_PATH,'analysis')
         console.log("xxxx: "+this.ANALYSIS_PATH)
         this.createCategoryFile(this.ANALYSIS_PATH , 'Analise', '2', 'Documentos de Analise')
@@ -247,6 +247,7 @@ ${project?.miniworld}
 
 
     private createCategoryFile(path_folder:string, label:string, position:string, description:string) {
+        console.log("Creating category file");
         const value =`{
             "label": "${label}",
             "position": ${position},
@@ -260,6 +261,7 @@ ${project?.miniworld}
     }
 
     private CreateDiagrams(){
+        console.log("Creating diagrams")
         const project = this.model.project
         const module_name = project?.id.toLocaleLowerCase() ?? `module_name`
         const module_path = createPath( this.ANALYSIS_PATH, module_name)     

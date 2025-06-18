@@ -38,13 +38,13 @@ export class CustomScopeComputation extends DefaultScopeComputation {
                         usecase => usecase.events.map(event=>this.exportNode(event, default_global, document)))
         
         root.components.filter(isModule).map(k =>
-            k.elements.map(e =>
+            [...k.localEntities, ...k.enumXs, ...k.modules].map(e =>
                 this.exportNode(e, default_global, document)
             )
         )
         
         const entities = root.components.filter(isModule).flatMap(m =>
-            m.elements.filter(isLocalEntity).map(e =>
+            [...m.localEntities, ...m.enumXs, ...m.modules].filter(isLocalEntity).map(e =>
                 this.descriptions.createDescription(e, `${e.$container.name}.${e.name}`, document)
             )
         )
