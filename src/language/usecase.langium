@@ -36,3 +36,12 @@ Event:
         )*
     '}'
 ;
+
+Team:
+    'team' id=ID '{'
+        'name' ':' name=STRING
+        'description' ':' description=STRING
+        'actors' ':' '[' actors+=Actor (',' actors+=Actor)* ']'
+    '}'
+;
+
