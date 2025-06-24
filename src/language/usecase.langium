@@ -5,9 +5,12 @@ import 'entities'
 
 
 Actor:
-    (Comment)?
-    // TODO Talvez o entity deva ser só LocalEntity
-    'actor' name=QualifiedName 'is' entity=[Entity:QualifiedName] ('extends' superType=[Actor:QualifiedName])?
+    'actor' name=QualifiedName '{'
+        (Name|
+        Description |
+        'contato' ':' contato =STRING
+        )*
+    '}'
 ;
 
 UseCase:
