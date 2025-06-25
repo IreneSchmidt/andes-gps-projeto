@@ -4,11 +4,16 @@ import 'helpers'
 import 'requirement'
 import 'usecase'
 import 'entities'
+import 'roadmap'
 
 entry Model:    
     
     (   project = Project
-        |components+=(Requirements|UseCase|Actor|AbstractElement|ModuleImport|Release|Team)
+        |components+=(Requirements|UseCase|Actor|AbstractElement|ModuleImport|Roadmap|Team)
+        | requirements += Requirements
+        | usecases += UseCase
+        | actors += Actor
+        |abstractelement += AbstractElement
     )*
 ;
 

@@ -29,6 +29,8 @@ Event:
     'event' id=ID '{'
          (Name
          |Description
+         |STARTDATE
+         |DUEDATE
          |'action' ':' action=STRING
          |'requirements'':' requirement= [FunctionalRequirement:QualifiedName](',' requirements+=[FunctionalRequirement:QualifiedName])?         
          |'depend'':' depend= [Event:QualifiedName](',' depends+=[Event:QualifiedName])?

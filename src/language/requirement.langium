@@ -2,13 +2,15 @@ import 'terminals'
 import 'helpers'
 import 'usecase'
 
-type Requirement=(FunctionalRequirement | NonFunctionalRequirement);
+type Requirement=(FunctionalRequirement | NonFunctionalRequirement|BussinesRule);
 type Epic = UseCase | FunctionalRequirement | NonFunctionalRequirement | BussinesRule;
 
 Requirements: 
     'requirements' id=ID '{'
         (Name
         |Description
+        | STARTDATE
+        | DUEDATE 
         |requirements+=(FunctionalRequirement|NonFunctionalRequirement|BussinesRule))*
     '}'
 ;  
@@ -17,6 +19,8 @@ FunctionalRequirement:
     'functional_requirement' id=ID '{'
         (Description
         |Priority 
+        | STARTDATE
+        | DUEDATE 
         |'depend'':' depend= [Requirement:QualifiedName](',' depends+=[Requirement:QualifiedName])?  
         )*
     '}'
@@ -25,7 +29,9 @@ FunctionalRequirement:
 NonFunctionalRequirement:
     'non_functional_requirement' id=ID '{'
         ( Description
-        |Priority  
+        |Priority
+        | STARTDATE
+        | DUEDATE 
         |'depend'':' depend= [Requirement:QualifiedName]*(',' depends+=[Requirement:QualifiedName])?
         )*
     '}'
@@ -34,18 +40,11 @@ NonFunctionalRequirement:
 BussinesRule:
     'bussines_rule' id=ID '{'
         ( Description
-        | Priority 
+        | Priority
+        | STARTDATE
+        | DUEDATE 
         | 'depend'':' depend= [Requirement:QualifiedName]*(',' depends+=[Requirement:QualifiedName])?
         )*
     '}'
 ;
 
-Release:
-    'release' id=ID '{'
-        (Description 
-        |'item' ':' items+= (UseCase | FunctionalRequirement | NonFunctionalRequirement | BussinesRule)
-        |'status' ':' status=STATUS
-        |'due_date' ':' due_date=STRING
-        |'version' ':' version=STRING
-    '}')*
-;

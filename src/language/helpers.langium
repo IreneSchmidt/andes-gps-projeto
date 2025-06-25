@@ -22,6 +22,13 @@ fragment Comment:
      comment = (SL_COMMENT |ML_COMMENT)
 ;
 
+// AGUARDANDO MUDANÇAS NO MADE
+fragment DUEDATE:
+    ('dueDate') ':' date=STRING
+;
+fragment STARTDATE:
+    ('startDate') ':' date=STRING
+;
 Architecture returns string:
     ('python'|'java'|'csharp-minimal-api'|'csharp-clean-architecture'|'charp-pipeline')
 ;
