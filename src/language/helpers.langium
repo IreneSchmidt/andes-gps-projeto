@@ -23,9 +23,13 @@ fragment Comment:
 ;
 
 Architecture returns string:
-    ('python-django-mvc'|'java-springboot-mvc'|'csharp-minimal-api'|'csharp-clean-architecture'|'charp-pipeline')
+    ('python'|'java'|'csharp-minimal-api'|'csharp-clean-architecture'|'charp-pipeline')
 ;
 
 DATATYPE returns string:
     ('string'|'integer'|'decimal'|'datetime'|'date'|'boolean'|'uuid'| 'email'| 'cpf'|'cnpj'|'zipcode'|'currency'|'mobilePhoneNumber'|'phoneNumber'| 'file'|'void')
+;
+
+STATUS returns string:
+    ('IN_DEVELOPMENT' | 'DONE' | 'CANCELED' | 'PENDING')
 ;

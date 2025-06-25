@@ -8,8 +8,9 @@ import 'entities'
 entry Model:    
     
     (   project = Project
-        |components+=(Requirements|UseCase|Actor|AbstractElement|ModuleImport)
-    )*;
+        |components+=(Requirements|UseCase|Actor|AbstractElement|ModuleImport|Release|Team)
+    )*
+;
 
 Project:
         'overview' id=ID '{'

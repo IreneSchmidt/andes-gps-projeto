@@ -39,9 +39,10 @@ Event:
 
 Team:
     'team' id=ID '{'
-        'name' ':' name=STRING
-        'description' ':' description=STRING
-        'actors' ':' '[' actors+=Actor (',' actors+=Actor)* ']'
+        (Name
+        |Description
+        |'actors' ':' actors+=[Actor:QualifiedName](',' actors+=[Actor:QualifiedName])*
+        )*
     '}'
 ;
 
