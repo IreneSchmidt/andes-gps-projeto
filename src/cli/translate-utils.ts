@@ -1,4 +1,4 @@
-import { Actor, Attribute, AttributeEnum, BussinesRule, EnumEntityAtribute, EnumX, Event, FunctionalRequirement, ImportedEntity, isFunctionalRequirement, isImportedEntity, isLocalEntity, isManyToOne, isNonFunctionalRequirement, isOneToMany, isOneToOne, isUseCase, LocalEntity, Module, ModuleImport, NonFunctionalRequirement, Relation, Requirements, UseCase } from "../language/generated/ast.js";
+import { Actor, Attribute, AttributeEnum, BussinesRule, Element, EnumEntityAtribute, EnumX, Event, FunctionalRequirement, FunctionEntity, ImportedEntity, isElement, isFunctionalRequirement, isImportedEntity, isLocalEntity, isManyToOne, isNonFunctionalRequirement, isOneToMany, isOneToOne, isUseCase, LocalEntity, Module, ModuleImport, NonFunctionalRequirement, Relation, Requirements, UseCase } from "../language/generated/ast.js";
 
 // EnumX
 export function translateEnumx(enumX: EnumX): EnumX {
@@ -30,8 +30,8 @@ export function translateLocalEntity(localEntity: LocalEntity): LocalEntity {
     const enumEntityAtributes = []
     for (const eea of localEntity.enumentityatributes) enumEntityAtributes.push(translateEnumEntityAttribute(eea))
     
-    // const functions = []
-    // for (const func of localEntity.functions) functions.push(translateFunction(func))
+    const functions = []
+    for (const func of localEntity.functions) functions.push(translateFunction(func))
 
     const relations = []
     for (const rel of localEntity.relations) relations.push(translateRelation(rel))
@@ -57,27 +57,28 @@ export function translateImportedEntity(importEntity: ImportedEntity): ImportedE
     return importEntity
 }
 
-// export function translateFunction(func: FunctionEntity): FunctionEntity {
-//     const name = func.name
+export function translateFunction(func: FunctionEntity): FunctionEntity {
+    const name = func.name
 
-//     const paramters = []
-//     for (const par of func.paramters) {
-//         if (isElement(par)) paramters.push(translateElement(par));
-//         else if (Array.isArray(par)) for (const elem of par) paramters.push(translateElement(elem));
-//     }
+    const paramters = []
+    for (const par of func.paramters) {
+        if (isElement(par)) paramters.push(translateElement(par));
+        else if (Array.isArray(par)) for (const elem of par) paramters.push(translateElement(elem));
+    }
 
-//     const response = translateDataType(func.response)
+    const response = func.response.toString()
 
-//     const comment = func.comment ?? ""
+    const comment = func.comment ?? ""
 
-//     return func
-// }
+    return func
+}
 
-// export function translateElement(elem: Element): Element {
+export function translateElement(elem: Element): Element {
+    const name =  elem.name
+    const type = elem.type.toString()
     
-    
-//     return elem
-// }
+    return elem
+}
 
 export function translateAttribute(attr: Attribute): Attribute {
     const name = attr.name
