@@ -4,7 +4,7 @@ import 'usecase'
 import 'requirement'
 import 'entities'
 
-type Item = UseCase | FunctionalRequirement | NonFunctionalRequirement | BussinesRule;
+type Item =UseCase | FunctionalRequirement | NonFunctionalRequirement | BussinesRule;
 Roadmap:
     'roadmap' id=ID '{'
         Name

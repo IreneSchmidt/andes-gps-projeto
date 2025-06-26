@@ -1,5 +1,6 @@
 import 'terminals'
 import 'helpers'
+import 'backlog'
 import 'usecase'
 
 type Requirement=(FunctionalRequirement | NonFunctionalRequirement|BussinesRule);
