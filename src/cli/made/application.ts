@@ -46,7 +46,8 @@ export class MadeApplication {
         backlog ${projectID}{
             name: "${project?.name_fragment?? "nodefined"}"
             description: "${project?.description}"
-            
+
+            ${modulesClassDiagram.length > 0? "teste caso esteja vazio":""}
             ${modulesClassDiagram.length > 0? this.createDiagramModel(modulesClassDiagram): " "}
             
             ${useCases.map(useCase=>  this.createEPIC(projectID, useCase)).join(`\n`)}
@@ -60,10 +61,7 @@ export class MadeApplication {
         epic domaindiagram {
             name: "Create Problem Domain Modules"
             description: "Create Problem Domain Modules"
-
             ${modules.map(module => module.name? this.createStoryFromModule(module): "").join("\n")}
-                
-            
         }        `
     }
 
@@ -95,8 +93,6 @@ export class MadeApplication {
             depends.push(`${this.dict[item.depend.ref?.id||""]}`)
         }
         item.depends.map(depend => depends.push(`${this.dict[depend.ref?.id||""]}`))
-
-
         return expandToString`${depends.length >0 ? "depends:" :""} ${depends.map(value => `${value}`).join(`,`)}        
         `
     }

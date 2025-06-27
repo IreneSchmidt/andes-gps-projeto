@@ -4,18 +4,21 @@ import 'usecase'
 import 'requirement'
 import 'entities'
 
-type Item=UseCase | FunctionalRequirement | NonFunctionalRequirement | BussinesRule;
 Roadmap:
     'roadmap' id=ID '{'
         Name
+        |Description
         |milestones+= Milestone
     '}'
 ;
 
 Milestone:
     'milestone' id=ID '{'
-        (Description
+        (Name
+        |Description
+        | STARTDATE
         | DUEDATE
+        | 'status' ':' status=STATUS
         | releases += Release)*
     '}'
 ;
@@ -25,7 +28,7 @@ Release:
         (
             Description
             | DUEDATE
-            | 'item' ':' item+= ( [Item:QualifiedName])(',' items+=[Item:QualifiedName])*
+            | 'item' ':' releaseItem+= ( [Epic:QualifiedName])(',' releaseItems+=[Epic:QualifiedName])*
             | 'status' ':' status=STATUS
             | 'version' ':' version=STRING
         )* 

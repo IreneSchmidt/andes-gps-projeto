@@ -35,6 +35,7 @@ Event:
          |'requirements'':' requirement= [FunctionalRequirement:QualifiedName](',' requirements+=[FunctionalRequirement:QualifiedName])?         
          |'depend'':' depend= [Event:QualifiedName](',' depends+=[Event:QualifiedName])?
          |'performer' ':' actors+=[Actor:QualifiedName](',' actors+=[Actor:QualifiedName])*
+         | task += Task
         )*
     '}'
 ;
@@ -48,3 +49,13 @@ Team:
     '}'
 ;
 
+Task:
+    'task' id=ID '{'
+        (Name
+        |Description
+        |STARTDATE
+        |DUEDATE
+        |'status' ':' status = STATUS
+        )*
+    '}'
+;
