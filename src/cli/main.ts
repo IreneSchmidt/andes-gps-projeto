@@ -26,7 +26,7 @@ export type GenerateOptions = {
 export default function(): void {
     const program = new Command();
 
-    program.version(require('../../package.json').version);
+    // program.version(require('../../package.json').version);
 
     const fileExtensions = AndesLanguageMetaData.fileExtensions.join(', ');
     program

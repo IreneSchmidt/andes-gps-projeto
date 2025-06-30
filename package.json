@@ -192,6 +192,7 @@
     "bin": {
         "andes-cli": "./bin/cli.js"
     },
+    "files": ["bin", "out"],
     "overrides": {
         "monaco-editor": "$monaco-editor",
         "vscode": "$vscode"
