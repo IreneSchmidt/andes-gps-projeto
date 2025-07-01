@@ -1,0 +1,33 @@
+project Test Andes {
+	name: "Test Andes"
+	description: "Test Andes"
+	startDate: 2025-07-01T03:14:34.173Z
+	duedate: 2025-07-01T03:14:34.173Z
+}
+
+
+
+
+
+backlog Nome {
+	name: "Test Andes"
+	description: "Test Andes"
+	epic undefined {
+		name: "Teste"		description: "[object Object]"
+}
+	epic domaindiagram {
+		name: "Create Problem Domain Modules"		description: "Create Problem Domain Modules"
+		story createmodule_ModuloTeste {
+			name: "Create database infrastruture to module ModuloTeste"
+			task create_module {
+				name: "Implements domain modules"
+				depends: 
+				Deliverables: 
+			}
+			task create_repository {
+				name: "Implements data repository"
+				depends: domaindiagram.createmodule_ModuloTeste.create_module
+				Deliverables: 
+			}}}
+}
+

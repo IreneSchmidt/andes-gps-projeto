@@ -8,8 +8,10 @@ Requirements:
     'requirements' id=ID '{'
         (Name
         |Description
-        |requirements+=(FunctionalRequirement|NonFunctionalRequirement|BussinesRule))*
-    '}'
+        |fr+=FunctionalRequirement
+        |nfr+=NonFunctionalRequirement
+        |br+=BussinesRule)*
+    '}' 
 ;  
 
 FunctionalRequirement:

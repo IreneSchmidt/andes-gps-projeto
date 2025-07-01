@@ -1,0 +1,32 @@
+Configuration {
+	software_name: "Test Andes"
+	about: "Test Andes"
+	language: python
+}
+
+// descrição
+module ModuloTeste { 
+	entity Pessoa {
+		nome: string   max: 0 min: 0
+		idade: integer   max: 0 min: 0
+		correiovirtual: email   max: 0 min: 0
+		enumatribute uses EnumName    
+	
+		Pessoa ManyToMany PNC
+	}
+
+	entity PNC {
+		nome: string   max: 0 min: 0
+		idade: integer   max: 0 min: 0
+		correiovirtual: email   max: 0 min: 0
+		identificacao: cpf   max: 0 min: 0
+
+	
+	}
+
+	enum EnumName {
+		enumerate1 
+		enumerate2 
+		enumerate3 
+	}
+}

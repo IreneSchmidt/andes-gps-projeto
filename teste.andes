@@ -1,0 +1,68 @@
+overview Nome {
+  name: "Test Andes"
+  description: "Test Andes"
+  purpose: "This project can make the people be cool"
+  miniworld: "You can write as much as you want"
+  Architecture: python
+}
+
+requirements Requirements {
+    name: "module requirements"
+    description: "This module is required to run the project"
+    functional_requirement FR01
+    {
+        description: "This system should be able to manage clients"
+        priority: "High" 
+    }
+
+    non_functional_requirement NFR01
+    {
+        description: "The system must ensure that, in each action confirmation, the potential impacts of the action are presented in a clear and understandable way to the user"
+        priority: "Medium" 
+        depend: Requirements.FR01
+    }
+
+    bussines_rule BR01
+    {
+        description: "This system should be link with paypal"
+        priority: "Low" 
+        depend: Requirements.NFR01
+    }
+}
+
+usecase Teste {
+    name: "Teste"
+    description: "Outro"
+    depend: Teste
+    requirements: Requirements.FR01, Requirements.NFR01
+}
+
+module ModuloTeste {
+    description: "descrição"
+    enum EnumName {
+        enumerate1 
+        enumerate2
+        enumerate3
+    }
+    
+    entity Pessoa{
+        enumatribute uses EnumName
+        nome: string
+        idade: integer
+        correiovirtual : email
+        outro ManyToMany PNC
+    }
+    
+    entity PNC{
+        nome: string
+        idade: integer
+        correiovirtual : email
+        identificacao: cpf
+    }
+}
+
+    
+
+
+
+
