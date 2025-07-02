@@ -1,0 +1,48 @@
+Configuration {
+	software_name: "ToDoList"
+	about: "Sistema para organização de tarefas diárias"
+	language: csharp-clean-architecture
+}
+
+// Módulo principal da aplicação To-Do List
+module ToDoApp { 
+	entity Usuario {
+		nome: string   max: 0 min: 0
+		_email: email   max: 0 min: 0
+		senha: string   max: 0 min: 0
+
+	
+	}
+
+	entity Categoria {
+		nome: string   max: 0 min: 0
+
+	
+		Categoria OneToMany Usuario
+	}
+
+	entity Tarefa {
+		titulo: string   max: 0 min: 0
+		descricao: string   max: 0 min: 0
+		data_vencimento: date   max: 0 min: 0
+		prioridade uses Prioridade    
+		status uses Status    
+	
+		Tarefa ManyToOne Categoria
+
+		Tarefa ManyToOne Usuario
+	}
+
+	enum Prioridade {
+		baixa 
+		media 
+		alta 
+	}
+
+	enum Status {
+		pendente 
+		andamento 
+		concluida 
+		cancelada 
+	}
+}

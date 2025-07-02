@@ -5,7 +5,8 @@ import { MadeApplication } from './made/application.js'
 import { SparkApplication } from './spark/application.js';
 import path from 'path';
 import { translateEnumx, translateRequirements, translateModule, translateModuleImport, translateUseCase, translateActor, translateBrToBrC, translateBR, translateFrToFrC, translateFR, translateNFR, translateNfrToNfrC } from './translate-utils.js';
-import { ApplicationCreator, ModuleInterface, Overview, ProjectInterface } from 'andes-lib'
+
+import appli from "andes-lib"
 
 export function generateJavaScript(model: Model, filePath: string, destination: string | undefined,opts: GenerateOptions): string {
     const final_destination  = extractDestination(filePath, destination);
@@ -36,6 +37,7 @@ export function generateJavaScript(model: Model, filePath: string, destination: 
         purpose: model.project?.purpose ? model.project?.purpose : "Sem Propósito",
         requisites: {
             buiinesRule: model.Requirements?.br.map((br)=>translateBrToBrC(translateBR(br)))??[],
+            //@ts-ignore
             functionalRequiriment: model.Requirements?.fr.filter(fr => isFunctionalRequirement(fr)).map(fr => translateFrToFrC(translateFR(fr)))??[],
             nonFunctionalRequiriment: model.Requirements?.nfr.filter(nfr => isNonFunctionalRequirement(nfr)).map(nfr => translateNfrToNfrC(translateNFR(nfr)))??[],
         },
@@ -49,7 +51,7 @@ export function generateJavaScript(model: Model, filePath: string, destination: 
         modules: [singleModule]
     }
 
-    const app = new ApplicationCreator(project, final_destination);
+    const app = new AndesLib.(project, final_destination);
     
     if(opts.destination == undefined)
     {
@@ -73,8 +75,7 @@ export function generateJavaScript(model: Model, filePath: string, destination: 
     }
 
     if (opts.all){
-        console.log(singleModule.packages[0].entityes[0])
-        console.log(singleModule.packages[0].entityes[0].enumAttributes)
+        console.log(singleModule.requisites.functionalRequiriment[1])
         app.create();
     }
     
@@ -98,7 +99,7 @@ function translate (model: Model) : Model /* Retorna um libmodel (ou qualquer qu
     const requirementsList: Requirements[] = []
     const useCaseList: UseCase[] = []
 
-    for (const comp of [...model.AbstractElement, ...model.Actor,...(model.Requirements?.fr??[]), ...(model.Requirements?.nfr??[]), ...(model.Requirements?.br??[]), ...model.UseCase, ...model.ModuleImport]) {
+    for (const comp of [...model.AbstractElement, ...model.Actor, ...model.UseCase, ...model.ModuleImport]) {
         // @ts-ignore
         if (isModule(comp)) moduleList.push(translateModule(comp));
 
@@ -162,6 +163,13 @@ function translate (model: Model) : Model /* Retorna um libmodel (ou qualquer qu
             useCaseList.push(translateUseCase(comp));
         }
     }
+
+    //@ts-ignore
+    model.Requirements?.fr.forEach(fr => requirementsList.push(translateFR(fr)));
+    //@ts-ignore
+    model.Requirements?.nfr.forEach(fr => requirementsList.push(translateNFR(fr)));
+    //@ts-ignore
+    model.Requirements?.br.forEach(fr => requirementsList.push(translateBR(fr)));
 
     return model
 }

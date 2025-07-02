@@ -1,8 +1,8 @@
-project Test Andes {
-	name: "Test Andes"
-	description: "Test Andes"
-	startDate: 2025-07-01T03:14:34.173Z
-	duedate: 2025-07-01T03:14:34.173Z
+project ToDoList {
+	name: "ToDoList"
+	description: "Sistema para organização de tarefas diárias"
+	startDate: 2025-07-02
+
 }
 
 
@@ -10,24 +10,33 @@ project Test Andes {
 
 
 backlog Nome {
-	name: "Test Andes"
-	description: "Test Andes"
-	epic undefined {
-		name: "Teste"		description: "[object Object]"
+	name: "ToDoList"
+	description: "Sistema para organização de tarefas diárias"
+	epic Cadastro {
+		name: "Cadastro e Autenticação"		description: "Usuário se cadastra e faz login"
+}
+	epic GerenciamentoTarefas {
+		name: "Gerenciamento de Tarefas"		description: "Usuário cria, edita, exclui e altera status das tarefas"
+}
+	epic OrganizacaoTarefas {
+		name: "Organização de Tarefas"		description: "Usuário organiza tarefas por categoria, data e status"
+}
+	epic Notificacoes {
+		name: "Notificações"		description: "Sistema envia lembretes ao usuário"
 }
 	epic domaindiagram {
 		name: "Create Problem Domain Modules"		description: "Create Problem Domain Modules"
-		story createmodule_ModuloTeste {
-			name: "Create database infrastruture to module ModuloTeste"
+		story createmodule_ToDoApp {
+			name: "Create database infrastruture to module ToDoApp"
 			task create_module {
 				name: "Implements domain modules"
-				depends: 
-				Deliverables: 
+
+
 			}
 			task create_repository {
 				name: "Implements data repository"
-				depends: domaindiagram.createmodule_ModuloTeste.create_module
-				Deliverables: 
+				depends: Nome.domaindiagram.createmodule_ToDoApp.create_module
+
 			}}}
 }
 

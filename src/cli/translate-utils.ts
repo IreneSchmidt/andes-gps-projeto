@@ -239,8 +239,6 @@ export function translateRelation(rel: Relation): AndeselashionShip {
         const comment = rel.comment ?? ""
     } 
 
-    console.log(rel.name);
-    console.log(type?.name)
 
     return {
         name: rel.name,
@@ -291,7 +289,8 @@ export function translateModuleImport(moduleImport: ModuleImport): ModuleImport 
 }
 
 // UseCase
-export function translateUseCase(useCase: UseCase, ucStack: UseCase[] = []): AndesUseCase {
+export function translateUseCase(useCase: UseCase, ucStack: UseCase[] = []): AndesUseCase
+{
         // @ts-ignore
     const id =  useCase.id
         // @ts-ignore
@@ -347,8 +346,8 @@ export function translateUseCase(useCase: UseCase, ucStack: UseCase[] = []): And
         // @ts-ignore
         depends: useCase.depends,
         // @ts-ignore
-        description: useCase.description ? useCase.depend : "",
-        id: useCase.id,
+        description: useCase.description ? useCase.description : "",
+        identifier: useCase.id,
         name: useCase.name_fragment ? useCase.name_fragment : "TODO: Name Fragment Not Defined",
         // @ts-ignore
         requirements: useCase.requirement ? useCase.requirement : [],
@@ -473,21 +472,11 @@ export function translateFR(fr: FunctionalRequirement): FunctionalRequirement {
         // @ts-ignore
     const description = fr.description ?? ""
 
-        // @ts-ignore
-    var depend: FunctionalRequirement | NonFunctionalRequirement | undefined = undefined
-    if (fr.depend?.ref) {
-        if (isFunctionalRequirement(fr.depend.ref)) depend = translateFR(fr.depend.ref)
-        else depend = translateNFR(fr.depend.ref);
-    }
+    //@ts-ignore
+    fr.depend = {name: fr.depend?.$refText??""};
 
-    const depends = []
-    for (const dep of fr.depends) {
-        const ref_temp = dep.ref
-        if (ref_temp) {
-            if (isFunctionalRequirement(ref_temp)) depends.push(translateFR(ref_temp));
-            else depends.push(translateNFR(ref_temp));
-        }
-    }
+    //@ts-ignore
+    fr.depends = [fr.depend];
 
     return fr
 }
@@ -551,10 +540,18 @@ export function translateBrToBrC(br: BussinesRule): BuisinesRuleClass
     return new BuisinesRuleClass(br.id, br.description);
 }
 
+
 export function translateFrToFrC(fr: FunctionalRequirement): FunctionalRequirementClass
-{
+{ 
     // @ts-ignore
-    return new FunctionalRequirementClass(fr.id, fr.priority?? "", fr.description, fr.depends.map(d => translateFrToFrC(translateFR(d))));
+    const aux = fr.depends?.map(d => translateFrToFrC(d));
+    if(aux)
+    {
+        console.log("FR ID:", fr.id);
+    // @ts-ignore
+    return new FunctionalRequirementClass(fr.id, fr.priority?? "", fr.description, aux);
+    }
+    return new FunctionalRequirementClass(fr.id, fr.priority?? "", fr.description, []);
 }
 
 export function translateNfrToNfrC(nfr: NonFunctionalRequirement): NonFunctionalRequirementClass

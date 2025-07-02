@@ -36,8 +36,6 @@ export class MadeApplication {
 
         const modulesClassDiagram = this.model.AbstractElement.filter(isModule)
         
-        console.log (modulesClassDiagram.length)
-
         useCases.map(useCase=>  this.dict[useCase.id]=`${projectID}.${useCase.id.toLocaleLowerCase()}`)
 
         useCases.map(useCase=> useCase.events.map((event,index) =>this.dict[event.id]=`${projectID}.${useCase.id.toLocaleLowerCase()}_${index}`))

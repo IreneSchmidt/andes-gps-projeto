@@ -1,68 +1,156 @@
 overview Nome {
-  name: "Test Andes"
-  description: "Test Andes"
-  purpose: "This project can make the people be cool"
-  miniworld: "You can write as much as you want"
-  Architecture: python
+  name: "ToDoList"
+  description: "Sistema para organização de tarefas diárias"
+  purpose: "Ajudar os usuários a gerenciarem suas tarefas de forma simples, eficiente e organizada"
+  miniworld: "Usuários podem cadastrar tarefas, organizar por categorias, acompanhar prazos e status"
+  Architecture: csharp-clean-architecture
 }
 
 requirements Requirements {
-    name: "module requirements"
-    description: "This module is required to run the project"
-    functional_requirement FR01
-    {
-        description: "This system should be able to manage clients"
-        priority: "High" 
+    name: "ToDo Requirements"
+    description: "Requisitos para o funcionamento do sistema To-Do List"
+
+    functional_requirement RF01 {
+        description: "O sistema deve permitir que usuários se cadastrem com nome, email e senha"
+        priority: "Alta"
     }
 
-    non_functional_requirement NFR01
-    {
-        description: "The system must ensure that, in each action confirmation, the potential impacts of the action are presented in a clear and understandable way to the user"
-        priority: "Medium" 
-        depend: Requirements.FR01
+    functional_requirement RF02 {
+        description: "O sistema deve permitir autenticação dos usuários"
+        priority: "Alta"
+        depend: Requirements.RF01
     }
 
-    bussines_rule BR01
-    {
-        description: "This system should be link with paypal"
-        priority: "Low" 
-        depend: Requirements.NFR01
+    functional_requirement RF03 {
+        description: "O sistema deve permitir que o usuário crie novas tarefas"
+        priority: "Alta"
+    }
+
+    functional_requirement RF04 {
+        description: "O sistema deve permitir que o usuário edite tarefas existentes"
+        priority: "Alta"
+    }
+
+    functional_requirement RF05 {
+        description: "O sistema deve permitir que o usuário exclua tarefas"
+        priority: "Alta"
+    }
+
+    functional_requirement RF06 {
+        description: "O sistema deve listar as tarefas do usuário"
+        priority: "Alta"
+    }
+
+    functional_requirement RF07 {
+        description: "O sistema deve permitir alterar o status das tarefas"
+        priority: "Alta"
+    }
+
+    functional_requirement RF08 {
+        description: "O sistema deve permitir que o usuário crie e gerencie categorias"
+        priority: "Média"
+    }
+
+    functional_requirement RF09 {
+        description: "O sistema deve permitir filtrar tarefas por status, data e categoria"
+        priority: "Média"
+    }
+
+    functional_requirement RF10 {
+        description: "O sistema pode enviar notificações sobre tarefas pendentes ou próximas do vencimento"
+        priority: "Baixa"
+    }
+
+    non_functional_requirement RNF01 {
+        description: "O sistema deve ter autenticação segura com criptografia de senha"
+        priority: "Alta"
+        depend: Requirements.RF02
+    }
+
+    non_functional_requirement RNF02 {
+        description: "Deve ser uma aplicação responsiva, funcionando bem em desktop e mobile"
+        priority: "Alta"
+    }
+
+    non_functional_requirement RNF03 {
+        description: "O backend deve ser desenvolvido em Django"
+        priority: "Alta"
+    }
+
+    non_functional_requirement RNF04 {
+        description: "O frontend deve ser desenvolvido em React"
+        priority: "Alta"
+    }
+
+    non_functional_requirement RNF05 {
+        description: "O sistema deve suportar pelo menos 100 usuários simultâneos"
+        priority: "Média"
+    }
+
+    non_functional_requirement RNF06 {
+        description: "O tempo de resposta das requisições não deve exceder 2 segundos em 95% dos casos"
+        priority: "Alta"
     }
 }
 
-usecase Teste {
-    name: "Teste"
-    description: "Outro"
-    depend: Teste
-    requirements: Requirements.FR01, Requirements.NFR01
+usecase Cadastro {
+    name: "Cadastro e Autenticação"
+    description: "Usuário se cadastra e faz login"
+    requirements: Requirements.RF01, Requirements.RF02
 }
 
-module ModuloTeste {
-    description: "descrição"
-    enum EnumName {
-        enumerate1 
-        enumerate2
-        enumerate3
+usecase GerenciamentoTarefas {
+    name: "Gerenciamento de Tarefas"
+    description: "Usuário cria, edita, exclui e altera status das tarefas"
+    requirements: Requirements.RF03, Requirements.RF04
+}
+
+usecase OrganizacaoTarefas {
+    name: "Organização de Tarefas"
+    description: "Usuário organiza tarefas por categoria, data e status"
+    requirements: Requirements.RF06, Requirements.RF08
+}
+
+usecase Notificacoes {
+    name: "Notificações"
+    description: "Sistema envia lembretes ao usuário"
+    requirements: Requirements.RF10
+}
+
+module ToDoApp {
+    description: "Módulo principal da aplicação To-Do List"
+
+    enum Prioridade {
+        baixa
+        media
+        alta
     }
-    
-    entity Pessoa{
-        enumatribute uses EnumName
+
+    enum Status {
+        pendente
+        andamento
+        concluida
+        cancelada
+    }
+
+    entity Usuario {
         nome: string
-        idade: integer
-        correiovirtual : email
-        outro ManyToMany PNC
+        _email: email
+        senha: string
     }
-    
-    entity PNC{
+
+    entity Categoria {
         nome: string
-        idade: integer
-        correiovirtual : email
-        identificacao: cpf
+        usuario OneToMany Usuario
+    }
+
+    entity Tarefa {
+        titulo: string
+        descricao: string
+        data_vencimento: date
+        prioridade uses Prioridade
+        status uses Status
+        categoria ManyToOne Categoria
+        usuario ManyToOne Usuario
     }
 }
-
-    
-
-
-
-
