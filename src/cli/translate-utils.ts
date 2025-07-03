@@ -1,399 +1,229 @@
-        // @ts-ignore
 import { Reference } from "langium";
-import { Actor as InternalActor, Attribute, AttributeEnum, BussinesRule, Element, EnumEntityAtribute, EnumX, Event, FunctionalRequirement, FunctionEntity, ImportedEntity, isElement, isFunctionalRequirement, isImportedEntity, isLocalEntity, isManyToOne, isNonFunctionalRequirement, isOneToMany, isOneToOne, isUseCase, LocalEntity, Module, ModuleImport, NonFunctionalRequirement, Relation, Requirements, UseCase, Model, Entity } from "../language/generated/ast.js";
-import { ActorType, EntityType, PackageType, RequirimentAgregationClass, RequirimentsBaseClass } from "andes-lib";
+import { Actor as InternalActor, BussinesRule, FunctionalRequirement, isFunctionalRequirement, NonFunctionalRequirement, Requirements, UseCase, Entity, isRequirement, isRequirements, LocalEntity, Attribute, EnumX, EnumEntityAtribute, Relation, isOneToOne, isManyToOne, isOneToMany, Module, Event, isEvent } from "../language/generated/ast.js";
+import { ActorType, AttributeType, EntityType, EnumAttributeType, EnumEntityType, EventType, PackageType, RelationType, RequirimentAgregationClass, RequirimentsBaseClass, UseCaseClass } from "andes-lib";
 
 
-// EnumX
-export function translateEnumx(enumX: EnumX): Enumerate {
-        // @ts-ignore
-    const name = enumX.name
-
-    const attrEnums = []
-    for (const attr of enumX.attributes) attrEnums.push(translateAttrEnum(attr));
-    
-        // @ts-ignore
-    const comment = enumX.comment ?? ""
-
-    return {
-        name: name,
-        options: attrEnums.map(attr => attr.name),
-    }
-}
-
-export function translateAttrEnum(attrEnum: AttributeEnum): AttributeEnum {
-        // @ts-ignore
-    const name = attrEnum.name
-        // @ts-ignore
-    const fullName = attrEnum.fullName ?? ""
-        // @ts-ignore
-    const comment = attrEnum.comment ?? ""
-    
-    return attrEnum
-}
-
-// Entity
-export function translateLocalEntity(localEntity: LocalEntity): LocalEntity {
-        // @ts-ignore
-    const name = localEntity.name
-
-    const attributes = []
-    for (const attr of localEntity.attributes) attributes.push(translateAttribute(attr))
-    
-    const enumEntityAtributes = []
-    for (const eea of localEntity.enumentityatributes) enumEntityAtributes.push(translateEnumEntityAttribute(eea))
-    
-    const functions = []
-    for (const func of localEntity.functions) functions.push(translateFunction(func))
-
-    const relations = []
-    for (const rel of localEntity.relations) relations.push(translateRelation(rel))
-
-        // @ts-ignore
-    const isAbstract = localEntity.is_abstract
-
-        // @ts-ignore
-    var superType: LocalEntity | ImportedEntity | undefined
-    const ref_temp = localEntity.superType?.ref
-    if (ref_temp) {
-        if (isLocalEntity(ref_temp)) superType = translateLocalEntity(ref_temp)
-        else if (isImportedEntity(ref_temp)) superType = translateImportedEntity(ref_temp)
-    }
-    else superType = undefined
-    
-        // @ts-ignore
-    const comment = localEntity.comment ?? ""
-
-    return localEntity
-}
-
-export function translateLocalEntityToSparkEntity(entity: LocalEntity): SparkEntity
+export function translateEnumx(enumX: EnumX): EnumEntityType
 {
     return {
-        name: entity.name,
+        identifier: enumX.name,
+        description: enumX.comment,
+        options: enumX.attributes.map(option => option.name),
+    }
+}
+
+// export function translateAttrEnum(attrEnum: AttributeEnum): AttributeEnum {
+//     const name = attrEnum.name
+//     const fullName = attrEnum.fullName ?? ""
+//     const comment = attrEnum.comment ?? ""
+    
+//     return attrEnum
+// }
+
+// Entity
+// export function translateLocalEntity(localEntity: LocalEntity): LocalEntity {
+//         // @ts-ignore
+//     const name = localEntity.name
+
+//     const attributes = []
+//     for (const attr of localEntity.attributes) attributes.push(translateAttribute(attr))
+    
+//     const enumEntityAtributes = []
+//     for (const eea of localEntity.enumentityatributes) enumEntityAtributes.push(translateEnumEntityAttribute(eea))
+    
+//     const functions = []
+//     for (const func of localEntity.functions) functions.push(translateFunction(func))
+
+//     const relations = []
+//     for (const rel of localEntity.relations) relations.push(translateRelation(rel))
+
+//         // @ts-ignore
+//     const isAbstract = localEntity.is_abstract
+
+//         // @ts-ignore
+//     var superType: LocalEntity | ImportedEntity | undefined
+//     const ref_temp = localEntity.superType?.ref
+//     if (ref_temp) {
+//         if (isLocalEntity(ref_temp)) superType = translateLocalEntity(ref_temp)
+//         else if (isImportedEntity(ref_temp)) superType = translateImportedEntity(ref_temp)
+//     }
+//     else superType = undefined
+    
+//         // @ts-ignore
+//     const comment = localEntity.comment ?? ""
+
+//     return localEntity
+// }
+
+export function translateLocalEntity(entity: LocalEntity): EntityType
+{
+    return {
+        identifier: entity.name,
         attributes: entity.attributes.map(attr => translateAttribute(attr)),
-        enumAttributes: entity.enumentityatributes.map(e => translateEnumEntityAttribute(e)),
-        relashionShips: entity.relations.map(r => translateRelation(r)),
+        enums: entity.enumentityatributes.map(e => translateEnumEntityAttribute(e)),
+        relationsAttr: entity.relations.map(r => translateRelation(r)),
+        description: entity.comment,
     }
 }
 
-export function translateImportedEntity(importEntity: ImportedEntity): ImportedEntity {
-        // @ts-ignore
-    const name = importEntity.name
+// export function translateImportedEntity(importEntity: ImportedEntity): ImportedEntity {
+//         // @ts-ignore
+//     const name = importEntity.name
 
-    return importEntity
-}
+//     return importEntity
+// }
 
-export function translateFunction(func: FunctionEntity): FunctionEntity {
-        // @ts-ignore
-    const name = func.name
+// export function translateFunction(func: FunctionEntity): FunctionEntity {
+//         // @ts-ignore
+//     const name = func.name
 
-    const paramters = []
-    for (const par of func.paramters) {
-        if (isElement(par)) paramters.push(translateElement(par));
-        else if (Array.isArray(par)) for (const elem of par) paramters.push(translateElement(elem));
-    }
+//     const paramters = []
+//     for (const par of func.paramters) {
+//         if (isElement(par)) paramters.push(translateElement(par));
+//         else if (Array.isArray(par)) for (const elem of par) paramters.push(translateElement(elem));
+//     }
 
-        // @ts-ignore
-    const response = func.response.toString()
+//         // @ts-ignore
+//     const response = func.response.toString()
 
-        // @ts-ignore
-    const comment = func.comment ?? ""
+//         // @ts-ignore
+//     const comment = func.comment ?? ""
 
-    return func
-}
+//     return func
+// }
 
-export function translateElement(elem: Element): Element {
-        // @ts-ignore
-    const name =  elem.name
-        // @ts-ignore
-    const type = elem.type.toString()
+// export function translateElement(elem: Element): Element {
+//         // @ts-ignore
+//     const name =  elem.name
+//         // @ts-ignore
+//     const type = elem.type.toString()
     
-    return elem
-}
+//     return elem
+// }
 
-export function translateAttribute(attr: Attribute): Attributes {
-        // @ts-ignore
-    const name = attr.name
-        // @ts-ignore
-    const fullName = attr.fullName ?? ""
-        // @ts-ignore
-    const min = attr.min ?? ""
-        // @ts-ignore
-    const max = attr.max ?? ""
-        // @ts-ignore
-    const type = attr.type.toString()
-        // @ts-ignore
-    const unique = attr.unique
-        // @ts-ignore
-    const comment = attr.comment ?? ""
-
+export function translateAttribute(attr: Attribute): AttributeType
+{
     return {
-        _type: type,
+        type: attr.type,
         blank: false,
-        name: name,
-        unique: unique,
-        max: Number(max),
-        min: Number(min)
+        identifier: attr.name,
+        unique: attr.unique,
+        max: attr.max,
+        min: attr.min
     }
 }
 
-export function translateEnumEntityAttribute(eea: EnumEntityAtribute): EnumAttribute {
-        // @ts-ignore
-    const name = eea.name
-    
-        // @ts-ignore
-    var type: EnumX | undefined
-    const ref_temp = eea.type.ref
-        // @ts-ignore
-    if (ref_temp) type = translateEnumx(ref_temp);
-
-        // @ts-ignore
-    const comment = eea.comment ?? ""
-
+export function translateEnumEntityAttribute(eea: EnumEntityAtribute): EnumAttributeType
+{
     return {
-        _type: {
-            name: eea.type.$refText,
-            options: []
-        },
-        name: eea.name,
+        identifier: eea.name,
+        type: {identifier: eea.type.$refText, options: []},
+        description: eea.comment,
     }
 }
 
-export function translateRelation(rel: Relation): AndeselashionShip {
+export function translateRelation(rel: Relation): RelationType
+{
     let relationType = "";
 
-    if (isOneToOne(rel)) {
-        // @ts-ignore
-        const name = rel.name
-
-        relationType = "OneToOne"
-
-        // @ts-ignore
-        var type: LocalEntity | ImportedEntity | undefined = undefined
-        const ref_temp = rel.type.ref
-        if (ref_temp) {
-            if (isLocalEntity(ref_temp)) type = translateLocalEntity(ref_temp);
-            else if (isImportedEntity(ref_temp)) type = translateImportedEntity(ref_temp);
-        }
-        
-        // @ts-ignore
-        const fullName = rel.fullName ?? ""
-        // @ts-ignore
-        const comment = rel.comment ?? ""
-    }
-    else if (isOneToMany(rel)) {
-        // @ts-ignore
-        const name = rel.name
-
-        relationType = "OneToMany";
-
-        // @ts-ignore
-        var type: LocalEntity | ImportedEntity | undefined = undefined
-        const ref_temp = rel.type.ref
-        if (ref_temp) {
-            if (isLocalEntity(ref_temp)) type = translateLocalEntity(ref_temp);
-            else if (isImportedEntity(ref_temp)) type = translateImportedEntity(ref_temp);
-        }
-        
-        // @ts-ignore
-        const fullName = rel.fullName ?? ""
-        // @ts-ignore
-        const comment = rel.comment ?? ""
-    }
-    else if (isManyToOne(rel)){
-        // @ts-ignore
-        const name = rel.name
-
-        relationType = "ManyToOne";
-
-        // @ts-ignore
-        var type: LocalEntity | ImportedEntity | undefined = undefined
-        const ref_temp = rel.type.ref
-        if (ref_temp) {
-            if (isLocalEntity(ref_temp)) type = translateLocalEntity(ref_temp);
-            else if (isImportedEntity(ref_temp)) type = translateImportedEntity(ref_temp);
-        }
-        
-        // @ts-ignore
-        const fullName = rel.fullName ?? ""
-        // @ts-ignore
-        const comment = rel.comment ?? ""
-    }
-    else {
-        // @ts-ignore
-        const name = rel.name
-
-        relationType = "ManyToMany"
-
-        // @ts-ignore
-        var type: LocalEntity | ImportedEntity | undefined = undefined
-        const ref_temp = rel.type.ref
-        if (ref_temp) {
-            if (isLocalEntity(ref_temp)) type = translateLocalEntity(ref_temp);
-            else if (isImportedEntity(ref_temp)) type = translateImportedEntity(ref_temp);
-        }
-        
-        // @ts-ignore
-        const fullName = rel.fullName ?? ""
-        // @ts-ignore
-        const comment = rel.comment ?? ""
-    } 
-
+    if (isOneToOne(rel))
+        { relationType = "OneToOne" }
+    else if (isOneToMany(rel))
+        { relationType = "OneToMany"; }
+    else if (isManyToOne(rel))
+        { relationType = "ManyToOne"; }
+    else
+        { relationType = "ManyToMany" } 
 
     return {
-        name: rel.name,
-        _relationType: relationType,
-        relationDestination: {name: type?.name??"", attributes: [], enumAttributes: [], relashionShips: []}
+        identifier: rel.name,
+        description: rel.comment,
+        relationType: relationType,
+        targetObject: { identifier: rel.type.$refText }
     }
 }
 
 export function translateModule(module: Module): PackageType
 {
-    
     return {
         identifier: module.name,
         description: module.description ? module.description : "",
-        entities: module.localEntities.map(le => translateLocalEntityToSparkEntity(le)),
+        entities: module.localEntities.map(e => translateLocalEntity(e)),
         enums: module.enumXs.map(e => translateEnumx(e)),
     }
 }
 
-export function translateModuleImport(moduleImport: ModuleImport): ModuleImport {
-        // @ts-ignore
-    const name = moduleImport.name
-        // @ts-ignore
-    const package_path = moduleImport.package_path
-        // @ts-ignore
-    const library = moduleImport.library
+// export function translateModuleImport(moduleImport: ModuleImport): ModuleImport {
+//         // @ts-ignore
+//     const name = moduleImport.name
+//         // @ts-ignore
+//     const package_path = moduleImport.package_path
+//         // @ts-ignore
+//     const library = moduleImport.library
 
-    const entities = []
-    for (const ent of moduleImport.entities) entities.push(translateImportedEntity(ent));
+//     const entities = []
+//     for (const ent of moduleImport.entities) entities.push(translateImportedEntity(ent));
 
-    return moduleImport
-}
+//     return moduleImport
+// }
 
 // UseCase
-export function translateUseCase(useCase: UseCase, ucStack: UseCase[] = []): AndesUseCase
+export function translateUseCase(useCase: UseCase, ucStack: UseCaseClass[] = []): UseCaseClass
 {
-        // @ts-ignore
-    const id =  useCase.id
-        // @ts-ignore
-    const name_fragment = useCase.name_fragment ?? ""
-        // @ts-ignore
-    const description = useCase.description ?? ""
+    const uc = ucStack.find(u => u.identifier == useCase.id);
+    if(uc != null)
+        { return uc; }
 
-        // @ts-ignore
-    var depend: UseCase | undefined = undefined
+    const aux = new UseCaseClass(
+        useCase.id,
+        useCase.name_fragment??"Caso de Uso Sem Nome",
+        useCase.description,
+        useCase.requirements.filter(r => { return isRequirement(r) && isRequirements(r.ref) }).map(r => {
+            // @ts-expect-error
+            return translateRequirement(r, r.ref);
+        }),
+    );
 
-    if(!ucStack.includes(useCase))
-    {
-        ucStack.push(useCase)
-        // @ts-ignore
-        if (useCase.depend?.ref) depend = translateUseCase(useCase.depend.ref, ucStack);
-    }
+    useCase.events.forEach(e => aux.event?.push(translateEvent(e, aux)))
+    
 
-    const depends = []
-    for (const uc of useCase.depends) {
-        const ref_temp = uc.ref
-        if (ref_temp) depends.push(translateUseCase(ref_temp));
-    }
+    ucStack.push(aux);
 
-    const actors = []
-    for (const actor of useCase.actors) {
-        const ref_temp = actor.ref
-        if (ref_temp) actors.push(translateActor(ref_temp))
-    }
-
-    const events = []
-    for (const event of useCase.events) events.push(translateEvent(event));
-
-        // @ts-ignore
-    var requirement: FunctionalRequirement | NonFunctionalRequirement | undefined = undefined
-    if (useCase.requirement?.ref) {
-        const ref_temp = useCase.requirement?.ref
-        if (isFunctionalRequirement(ref_temp)) requirement = translateFR(ref_temp);
-        else requirement = translateNFR(ref_temp);
-    }
-
-    const requirements = []
-    for (const req of useCase.requirements) {
-        const ref_temp = req.ref
-        if (ref_temp) {
-            if (isFunctionalRequirement(ref_temp)) requirements.push(translateFR(ref_temp));
-            else requirements.push(translateNFR(ref_temp));
-        }
-    }
-
-    return {
-        // @ts-ignore
-        actors: useCase.actors.map(a => translateActor(a)),
-        // @ts-ignore
-        depends: useCase.depends,
-        // @ts-ignore
-        description: useCase.description ? useCase.description : "",
-        identifier: useCase.id,
-        name: useCase.name_fragment ? useCase.name_fragment : "TODO: Name Fragment Not Defined",
-        // @ts-ignore
-        requirements: useCase.requirement ? useCase.requirement : [],
-        // @ts-ignore
-        events: useCase.events.map(e => translateEvent(e))
-    };
+    return aux;
 }
 
-export function translateEvent(event: Event): EventType {
-        // @ts-ignore
-    const id = event.id
-        // @ts-ignore
-    const name_fragment = event.name_fragment ?? ""
-        // @ts-ignore
-    const description = event.description ?? ""
-        // @ts-ignore
-    const action = event.action ?? ""
+export function translateEvent(event: Event, ucRef: UseCaseClass, eventStack: EventType[] = []): EventType {
+    const e = eventStack.find(_e => _e.identifier == event.id);
+    const depends = event.depends;
 
-        // @ts-ignore
-    var requirement: FunctionalRequirement | undefined = undefined
-    if (event.requirement?.ref) {
-        const ref_temp = event.requirement?.ref
-        requirement = translateFR(ref_temp);
+    if(e != undefined)
+    {
+        return e;
     }
+    
 
-    const requirements = []
-    for (const req of event.requirements) {
-        const ref_temp = req.ref
-        if (ref_temp) {
-            requirements.push(translateFR(ref_temp));
-        }
-    }
+    if(event.depend != null)
+        { depends.push(event.depend); }
 
-        // @ts-ignore
-    var depend: Event | undefined = undefined
-        // @ts-ignore
-    if (event.depend?.ref) depend = translateEvent(event.depend.ref);
-
-    const depends = []
-    for (const uc of event.depends) {
-        const ref_temp = uc.ref
-        if (ref_temp) depends.push(translateEvent(ref_temp));
-    }
-
-    const actors = []
-    for (const actor of event.actors) {
-        const ref_temp = actor.ref
-        if (ref_temp) actors.push(translateActor(ref_temp))
-    }
-
-    return {
-        // @ts-ignore
-        action: event.action ? event.action : [],
-        // @ts-ignore
-        depends: event.depend ? event.depend : [],
-        description: event.description ? event.description : "",
+    const aux: EventType = {
         identifier: event.id,
-        name: event.name_fragment ? event.name_fragment : "",
-        // @ts-ignore
-        requirements: event.requirement ? event.requirement : [],
+        name: event.name_fragment??"Evento Sem Nome",
+        ucRef: ucRef,
+        action: event.action,
+        description: event.description,
+        depends: []
     }
+
+    eventStack.push(aux);
+
+    depends.forEach(d => {
+        if(isEvent(d.ref))
+        {
+            aux.depends?.push(translateEvent(d.ref, ucRef, eventStack))
+        }
+    })
+
+    return aux;
 }
 
 
@@ -415,7 +245,6 @@ export function translateActor(actor: InternalActor): ActorType
 
 
 // Requirements
-
 export function translateRequirements(req: Requirements | undefined): RequirimentAgregationClass
 {
     if(req == undefined)
@@ -423,8 +252,13 @@ export function translateRequirements(req: Requirements | undefined): Requirimen
 
     const r = new RequirimentAgregationClass(req.id, req.name_fragment??"", req.description);
 
-    r.
+    const reqStack: RequirimentsBaseClass[] = [];
 
+    req.fr.forEach(frq => r.fr.push(translateRequirement(frq, r, reqStack)));
+    req.nfr.forEach(nfrq => r.nfr.push(translateRequirement(nfrq, r, reqStack)));
+    req.br.forEach(br => r.br.push(translateRequirement(br, r, reqStack)));
+
+    return r;
 }
 
 export function translateRequirement(req: FunctionalRequirement | NonFunctionalRequirement | BussinesRule, reqRef: RequirimentAgregationClass, reqStack: RequirimentsBaseClass[] = []): RequirimentsBaseClass
@@ -433,13 +267,17 @@ export function translateRequirement(req: FunctionalRequirement | NonFunctionalR
     if(v != undefined)
         { return v; }
 
+    const dependencies = req.depends;
+    if(req.depend)
+        { dependencies.push(req.depend); }
+
     const aux = new RequirimentsBaseClass(
         req.id,
-        req.$container.name_fragment??"",
+        req.name_fragment??"Requisito Sem Nome Definido",
         reqRef,
         req.priority??"",
         req.description??"",
-        req.depends.map(d => new RequirimentsBaseClass(d.$refText, "", reqRef, ""))
+        dependencies.map(d => new RequirimentsBaseClass(d.ref?.id??"ERRO", d.ref?.name_fragment??"Requisito Sem Nome Definido", reqRef, ""))
     )
 
     reqStack.push(aux);
@@ -518,27 +356,27 @@ export function translateBR(br: BussinesRule): BussinesRule {
     return br
 }
 
-export function translateBrToBrC(br: BussinesRule): BuisinesRuleClass
-{
-    return new BuisinesRuleClass(br.id, br.description);
-}
+// export function translateBrToBrC(br: BussinesRule): BuisinesRuleClass
+// {
+//     return new BuisinesRuleClass(br.id, br.description);
+// }
 
 
-export function translateFrToFrC(fr: FunctionalRequirement): FunctionalRequirementClass
-{ 
-    // @ts-ignore
-    const aux = fr.depends?.map(d => translateFrToFrC(d));
-    if(aux)
-    {
-        console.log("FR ID:", fr.id);
-    // @ts-ignore
-    return new FunctionalRequirementClass(fr.id, fr.priority?? "", fr.description, aux);
-    }
-    return new FunctionalRequirementClass(fr.id, fr.priority?? "", fr.description, []);
-}
+// export function translateFrToFrC(fr: FunctionalRequirement): FunctionalRequirementClass
+// { 
+//     // @ts-ignore
+//     const aux = fr.depends?.map(d => translateFrToFrC(d));
+//     if(aux)
+//     {
+//         console.log("FR ID:", fr.id);
+//     // @ts-ignore
+//     return new FunctionalRequirementClass(fr.id, fr.priority?? "", fr.description, aux);
+//     }
+//     return new FunctionalRequirementClass(fr.id, fr.priority?? "", fr.description, []);
+// }
 
-export function translateNfrToNfrC(nfr: NonFunctionalRequirement): NonFunctionalRequirementClass
-{
-    return new NonFunctionalRequirementClass(nfr.id, nfr.description);
-}
+// export function translateNfrToNfrC(nfr: NonFunctionalRequirement): NonFunctionalRequirementClass
+// {
+//     return new NonFunctionalRequirementClass(nfr.id, nfr.description);
+// }
 

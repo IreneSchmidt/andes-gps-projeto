@@ -1,4 +1,4 @@
-overview Nome {
+overview TodoList {
   name: "ToDoList"
   description: "Sistema para organização de tarefas diárias"
   purpose: "Ajudar os usuários a gerenciarem suas tarefas de forma simples, eficiente e organizada"
@@ -6,11 +6,15 @@ overview Nome {
   Architecture: csharp-clean-architecture
 }
 
+// ESSA AQUI É A DESCRIÇÃO DESSE ATOR :p
+actor Teste is Usuario
+
 requirements Requirements {
     name: "ToDo Requirements"
     description: "Requisitos para o funcionamento do sistema To-Do List"
 
     functional_requirement RF01 {
+        name: "TESTE"
         description: "O sistema deve permitir que usuários se cadastrem com nome, email e senha"
         priority: "Alta"
     }
@@ -91,6 +95,11 @@ requirements Requirements {
         description: "O tempo de resposta das requisições não deve exceder 2 segundos em 95% dos casos"
         priority: "Alta"
     }
+
+    bussines_rule BR01 {
+        name: "Regra de Teste"
+        description: "Descrição"
+    }
 }
 
 usecase Cadastro {
@@ -109,6 +118,16 @@ usecase OrganizacaoTarefas {
     name: "Organização de Tarefas"
     description: "Usuário organiza tarefas por categoria, data e status"
     requirements: Requirements.RF06, Requirements.RF08
+    event NovoEvento {
+        name: "Evento de Teste"
+        action: "Fazer Tal Coisa"
+        depend: OrganizacaoTarefas.OutroNovoEvento
+    }
+    event OutroNovoEvento {
+        name: "Outro Evento de Teste"
+        action: "Fazer Outra Coisa"
+        depend: OrganizacaoTarefas.NovoEvento
+    }
 }
 
 usecase Notificacoes {
@@ -139,7 +158,9 @@ module ToDoApp {
         senha: string
     }
 
+    // ESSA ENTIDADE AQUI TEM UMA DESCRIÇÃO :)
     entity Categoria {
+        // Descrição do Nome?
         nome: string
         usuario OneToMany Usuario
     }

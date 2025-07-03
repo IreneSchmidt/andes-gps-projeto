@@ -17,6 +17,7 @@ Requirements:
 FunctionalRequirement:
     'functional_requirement' id=ID '{'
         (Description
+        |Name
         |Priority 
         |'depend'':' depend= [Requirement:QualifiedName](',' depends+=[Requirement:QualifiedName])?  
         )*
@@ -26,6 +27,7 @@ FunctionalRequirement:
 NonFunctionalRequirement:
     'non_functional_requirement' id=ID '{'
         ( Description
+        |Name
         |Priority  
         |'depend'':' depend= [Requirement:QualifiedName]*(',' depends+=[Requirement:QualifiedName])?
         )*
@@ -35,6 +37,7 @@ NonFunctionalRequirement:
 BussinesRule:
     'bussines_rule' id=ID '{'
         ( Description
+        |Name
         | Priority 
         | 'depend'':' depend= [Requirement:QualifiedName]*(',' depends+=[Requirement:QualifiedName])?
         )*
