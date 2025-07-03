@@ -1,7 +1,8 @@
         // @ts-ignore
-import { Actor as InternalActor, Attribute, AttributeEnum, BussinesRule, Element, EnumEntityAtribute, EnumX, Event, FunctionalRequirement, FunctionEntity, ImportedEntity, isElement, isFunctionalRequirement, isImportedEntity, isLocalEntity, isManyToOne, isNonFunctionalRequirement, isOneToMany, isOneToOne, isUseCase, LocalEntity, Module, ModuleImport, NonFunctionalRequirement, Relation, Requirements, UseCase, Model } from "../language/generated/ast.js";
+import { Reference } from "langium";
+import { Actor as InternalActor, Attribute, AttributeEnum, BussinesRule, Element, EnumEntityAtribute, EnumX, Event, FunctionalRequirement, FunctionEntity, ImportedEntity, isElement, isFunctionalRequirement, isImportedEntity, isLocalEntity, isManyToOne, isNonFunctionalRequirement, isOneToMany, isOneToOne, isUseCase, LocalEntity, Module, ModuleImport, NonFunctionalRequirement, Relation, Requirements, UseCase, Model, Entity } from "../language/generated/ast.js";
+import { ActorType, EntityType, PackageType, RequirimentAgregationClass, RequirimentsBaseClass } from "andes-lib";
 
-import { Actor as AndesActor, UseCaseType as AndesUseCase, Attributes, EnumAttribute, Event as EventType, Package, SparkEntity, Relashioship as AndeselashionShip, Enumerate, BuisinesRuleClass, FunctionalRequirementClass, NonFunctionalRequirementClass } from "andes-lib";
 
 // EnumX
 export function translateEnumx(enumX: EnumX): Enumerate {
@@ -247,30 +248,14 @@ export function translateRelation(rel: Relation): AndeselashionShip {
     }
 }
 
-// Module
-export function translateModule(module: Module): Package
+export function translateModule(module: Module): PackageType
 {
-        // @ts-ignore
-    const name = module.name
-        // @ts-ignore
-    const description = module.description ?? ""
     
-    const enumXs = []
-    for (const enumX of module.enumXs) enumXs.push(translateEnumx(enumX))
-    
-    const localEntities = []
-    for (const locEnt of module.localEntities) localEntities.push(translateLocalEntity(locEnt))
-    
-    const modules = []
-    for (const mod of module.modules) modules.push(translateModule(mod))
-
     return {
-        name: module.name,
         identifier: module.name,
         description: module.description ? module.description : "",
-        entityes: module.localEntities.map(le => translateLocalEntityToSparkEntity(le)),
+        entities: module.localEntities.map(le => translateLocalEntityToSparkEntity(le)),
         enums: module.enumXs.map(e => translateEnumx(e)),
-        subPackages: []
     }
 }
 
@@ -411,57 +396,55 @@ export function translateEvent(event: Event): EventType {
     }
 }
 
-export function translateActor(actor: InternalActor): AndesActor {
-        // @ts-ignore
-    const name = actor.name
-        // @ts-ignore
-    const comment = actor.comment ?? ""
 
-        // @ts-ignore
-    var superType: InternalActor | undefined = undefined
-    if (actor.superType?.ref) {
-        const ref_temp = actor.superType.ref
-        // @ts-ignore
-        superType = translateActor(ref_temp)
-    }
-
-        // @ts-ignore
-    var entity: LocalEntity | ImportedEntity | undefined = undefined
-    if (actor.entity.ref) {
-        const ref_temp = actor.entity.ref
-        if (isLocalEntity(ref_temp)) entity = translateLocalEntity(ref_temp);
-        else entity = translateImportedEntity(ref_temp)
-    }
-    
+export function translateEntity(entity: Reference<Entity>): EntityType
+{
     return {
-        name: actor.name,
-        comment: actor.comment? actor.comment : "",
-    };
+        identifier: entity.$refText,
+    }
 }
 
+export function translateActor(actor: InternalActor): ActorType
+{
+    return {
+        identifier: actor.name,
+        description: actor.comment,
+        targetType: translateEntity(actor.entity),
+    }
+}
+
+
 // Requirements
-export function translateRequirements(req: Requirements): Requirements {
-        // @ts-ignore
-    const id = req.id
-        // @ts-ignore
-    const name_fragment = req.name_fragment ?? ""
-        // @ts-ignore
-    const description = req.description ?? ""
 
-    const requirements = []
-    for (const rqmt of req.fr) {
-        requirements.push(translateFR(rqmt));
-    }
+export function translateRequirements(req: Requirements | undefined): RequirimentAgregationClass
+{
+    if(req == undefined)
+        { return new RequirimentAgregationClass("", "")};
 
-    for (const rqmt of req.nfr) {
-        requirements.push(translateNFR(rqmt));
-    }
+    const r = new RequirimentAgregationClass(req.id, req.name_fragment??"", req.description);
 
-    for (const rqmt of req.br) {
-        requirements.push(translateBR(rqmt));
-    }
+    r.
 
-    return req
+}
+
+export function translateRequirement(req: FunctionalRequirement | NonFunctionalRequirement | BussinesRule, reqRef: RequirimentAgregationClass, reqStack: RequirimentsBaseClass[] = []): RequirimentsBaseClass
+{
+    const v = reqStack.find(obj=>obj.identifier==req.id);
+    if(v != undefined)
+        { return v; }
+
+    const aux = new RequirimentsBaseClass(
+        req.id,
+        req.$container.name_fragment??"",
+        reqRef,
+        req.priority??"",
+        req.description??"",
+        req.depends.map(d => new RequirimentsBaseClass(d.$refText, "", reqRef, ""))
+    )
+
+    reqStack.push(aux);
+
+    return aux;
 }
 
 export function translateFR(fr: FunctionalRequirement): FunctionalRequirement {

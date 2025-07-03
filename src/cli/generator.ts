@@ -6,7 +6,7 @@ import { SparkApplication } from './spark/application.js';
 import path from 'path';
 import { translateEnumx, translateRequirements, translateModule, translateModuleImport, translateUseCase, translateActor, translateBrToBrC, translateBR, translateFrToFrC, translateFR, translateNFR, translateNfrToNfrC } from './translate-utils.js';
 
-import appli from "andes-lib"
+import { ApplicationCreator, ProjectModuleType, ProjectOverviewType } from "andes-lib"
 
 export function generateJavaScript(model: Model, filePath: string, destination: string | undefined,opts: GenerateOptions): string {
     const final_destination  = extractDestination(filePath, destination);
@@ -17,41 +17,48 @@ export function generateJavaScript(model: Model, filePath: string, destination: 
     const madeApplication = new MadeApplication(model,final_destination); 
     const sparkApplication = new SparkApplication(model,final_destination);
 
-    const overview: Overview = {
+    const overview: ProjectOverviewType = {
         architecture: model.project?.architcture ? model.project.architcture : "python",
         description: model.project?.description ? model.project.description : "",
         name: model.project?.name_fragment ? model.project.name_fragment : "Projeto sem Nome",
         miniwolrd: model.project?.miniworld ? model.project?.miniworld : "Sem Minimundo",
         purpose: model.project?.purpose ? model.project?.purpose : "Sem Propósito",
+        identifier: model.project?.id??"",
     }
 
-    const singleModule: ModuleInterface = {
+    const singleModule: ProjectModuleType = {
         actors: model.Actor.map(c => translateActor(c)),
-        useCases: model.UseCase.map(uc => translateUseCase(uc)),
+        uc: model.UseCase.map(uc => translateUseCase(uc)),
         description: model.project?.description ? model.project.description : "No Description",
         identifier: model.project?.id ? model.project.id : "",
         miniwolrd: model.project?.miniworld ? model.project?.miniworld : "Sem Minimundo",
         name: model.project?.name_fragment ? model.project.name_fragment : "Projeto sem Nome",
-        // @ts-ignore
-        description: model.project?.description ? model.project.description : "",
         purpose: model.project?.purpose ? model.project?.purpose : "Sem Propósito",
         requisites: {
-            buiinesRule: model.Requirements?.br.map((br)=>translateBrToBrC(translateBR(br)))??[],
-            //@ts-ignore
-            functionalRequiriment: model.Requirements?.fr.filter(fr => isFunctionalRequirement(fr)).map(fr => translateFrToFrC(translateFR(fr)))??[],
-            nonFunctionalRequiriment: model.Requirements?.nfr.filter(nfr => isNonFunctionalRequirement(nfr)).map(nfr => translateNfrToNfrC(translateNFR(nfr)))??[],
+            identifier: model.Requirements?.id??"",
+            name: model.Requirements?.name_fragment??"",
+            br: model.Requirements?.br.map((br)=>translateBrToBrC(translateBR(br)))??[],
+            fr: model.Requirements?.fr.filter(fr => isFunctionalRequirement(fr)).map(fr => translateFrToFrC(translateFR(fr)))??[],
+            nfr: model.Requirements?.nfr.filter(nfr => isNonFunctionalRequirement(nfr)).map(nfr => translateNfrToNfrC(translateNFR(nfr)))??[],
         },
 
         // @ts-ignore
         packages: model.AbstractElement.filter(pkgs => isModule(pkgs)).map(pkg => translateModule(pkg)),
     }
 
-    const project: ProjectInterface = {
-        overview: overview,
-        modules: [singleModule]
+    const project: ProjectModuleType = {
+        identifier: model.project?.name_fragment??"",
+        name: model.project?.id??"",
+        miniwolrd: model.project?.miniworld??"",
+        purpose: model.project?.purpose??"",
+        description:model.project?.description??"",
+
+        actors: model.Actor.map(act=>translateActor(act)),
+        packages: model.AbstractElement.filter(e=>isModule(e)).map(m => translateModule(m)),
+        requisites: translateRequirements(model.Requirements)
     }
 
-    const app = new AndesLib.(project, final_destination);
+    const app = new ApplicationCreator(project, final_destination);
     
     if(opts.destination == undefined)
     {
