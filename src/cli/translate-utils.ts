@@ -205,11 +205,17 @@ export function translateEvent(event: Event, ucRef: UseCaseClass, eventStack: Ev
     if(event.depend != null)
         { depends.push(event.depend); }
 
+    let action: string[] = [];
+    if(event.action && event.action instanceof Array)
+    {
+        action = event.action;
+    }
+
     const aux: EventType = {
         identifier: event.id,
         name: event.name_fragment??"Evento Sem Nome",
         ucRef: ucRef,
-        action: event.action,
+        action: action,
         description: event.description,
         depends: []
     }

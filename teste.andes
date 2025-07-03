@@ -121,6 +121,7 @@ usecase OrganizacaoTarefas {
     event NovoEvento {
         name: "Evento de Teste"
         action: "Fazer Tal Coisa"
+        action: "outra coisa"
         depend: OrganizacaoTarefas.OutroNovoEvento
     }
     event OutroNovoEvento {
