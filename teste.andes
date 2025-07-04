@@ -112,6 +112,7 @@ usecase GerenciamentoTarefas {
     name: "Gerenciamento de Tarefas"
     description: "Usuário cria, edita, exclui e altera status das tarefas"
     requirements: Requirements.RF03, Requirements.RF04
+    depend: Cadastro
 }
 
 usecase OrganizacaoTarefas {
@@ -119,6 +120,7 @@ usecase OrganizacaoTarefas {
     description: "Usuário organiza tarefas por categoria, data e status"
     requirements: Requirements.RF06, Requirements.RF08
     event NovoEvento {
+        description: "Descrição"
         name: "Evento de Teste"
         action: "Fazer Tal Coisa"
         action: "outra coisa"
@@ -127,7 +129,6 @@ usecase OrganizacaoTarefas {
     event OutroNovoEvento {
         name: "Outro Evento de Teste"
         action: "Fazer Outra Coisa"
-        depend: OrganizacaoTarefas.NovoEvento
     }
 }
 

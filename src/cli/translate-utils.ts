@@ -192,7 +192,8 @@ export function translateUseCase(useCase: UseCase, ucStack: UseCaseClass[] = [])
     return aux;
 }
 
-export function translateEvent(event: Event, ucRef: UseCaseClass, eventStack: EventType[] = []): EventType {
+export function translateEvent(event: Event, ucRef: UseCaseClass, eventStack: EventType[] = []): EventType
+{
     const e = eventStack.find(_e => _e.identifier == event.id);
     const depends = event.depends;
 
@@ -200,9 +201,8 @@ export function translateEvent(event: Event, ucRef: UseCaseClass, eventStack: Ev
     {
         return e;
     }
-    
 
-    if(event.depend != null)
+    if(event.depend != null && !event.depends.includes(event.depend))
         { depends.push(event.depend); }
 
     let action: string[] = [];
