@@ -47,7 +47,7 @@ Usuario "1" -- "*" Tarefa : usuario
 
 ## Usuario
 Descrição: Classe Sem Descrição
-Tabela 4: atributos da entidade Usuario
+Tabela 1: atributos da entidade Usuario
 
 |Nome|Descrição|Meta Dados|Visibilidade|
 |-|-|-|-|
@@ -59,7 +59,7 @@ Autor: Autoria Própria
 
 ## Categoria
 Descrição: // ESSA ENTIDADE AQUI TEM UMA DESCRIÇÃO :)
-Tabela 5: atributos da entidade Categoria
+Tabela 2: atributos da entidade Categoria
 
 |Nome|Descrição|Meta Dados|Visibilidade|
 |-|-|-|-|
@@ -69,7 +69,7 @@ Autor: Autoria Própria
 
 ## Tarefa
 Descrição: Classe Sem Descrição
-Tabela 6: atributos da entidade Tarefa
+Tabela 3: atributos da entidade Tarefa
 
 |Nome|Descrição|Meta Dados|Visibilidade|
 |-|-|-|-|

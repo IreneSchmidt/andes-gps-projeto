@@ -68,7 +68,6 @@ requirements Requirements {
     non_functional_requirement RNF01 {
         description: "O sistema deve ter autenticação segura com criptografia de senha"
         priority: "Alta"
-        depend: Requirements.RF02
     }
 
     non_functional_requirement RNF02 {
