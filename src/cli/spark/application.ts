@@ -26,7 +26,7 @@ export class SparkApplication {
 
     private createspark(): string {
     const project = this.model.project;
-    const modules = this.model.components.filter(isModule);
+    const modules = this.model.AbstractElement.filter(isModule);
 
     return expandToStringWithNL`
         Configuration {
